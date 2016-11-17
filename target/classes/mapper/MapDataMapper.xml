@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2016. 杭州端点网络科技有限公司.  All rights reserved.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="dig.map.data">
+    <resultMap id="MapDataMap" type="MapData">
+        <id column="id" property="id"/>
+        <result column="area" property="area"/>
+        <result column="area_id" property="areaId"/>
+        <result column="point_x" property="pointX"/>
+        <result column="point_y" property="pointY"/>
+        <result column="goods" property="goods"/>
+        <result column="goods_id" property="goodsId"/>
+        <result column="time" property="time"/>
+        <result column="time_id" property="timeId"/>
+        <result column="extra_json" property="extraJson"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <sql id="tb">
+        map_data
+    </sql>
+
+    <sql id="value_exclude_id">
+        area,area_id,point_x,point_y,goods,goods_id,time,time_id,extra_json,created_at,updated_at
+    </sql>
+
+    <sql id="vls">
+        id,area,area_id,point_x,point_y,goods,goods_id,time,time_id,extra_json,created_at,updated_at
+    </sql>
+
+    <sql id="insert_value">
+       #{area},#{areaId},#{pointX},#{pointY},#{goods},#{goodsId},#{time},#{timeId},#{extraJson},DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s'),DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+    </sql>
+
+    <insert id="create" parameterType="MapData">
+        INSERT INTO <include refid="tb"/> (<include refid="value_exclude_id"/>) VALUES (<include refid="insert_value"/>)
+    </insert>
+
+    <select id="findById" parameterType="long" resultMap="MapDataMap">
+        SELECT <include refid="vls"/> FROM <include refid="tb"/> WHERE id = #{id}
+    </select>
+
+    <select id="findAll"  resultMap="MapDataMap">
+        SELECT <include refid="vls"/> FROM <include refid="tb"/>
+    </select>
+
+    <select id="findMapDataCounts"  resultType="int">
+        SELECT count(1)  FROM <include refid="tb"/>
+    </select>
+
+    <select id="findMapGoodsByPoint"  parameterType="map" resultMap="MapDataMap">
+        SELECT <include refid="vls"/> FROM <include refid="tb"/>  WHERE (abs(point_x - #{pointX}) &lt; 5) AND (abs(point_y - #{pointY}) &lt; 5) AND area_id= #{areaId}
+    </select>
+
+</mapper>

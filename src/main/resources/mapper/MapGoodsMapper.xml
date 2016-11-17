@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2016. 杭州端点网络科技有限公司.  All rights reserved.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="dig.map.goods">
+
+    <resultMap id="MapGoodsMap" type="MapGoods">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="image_url" property="imageUrl"/>
+        <result column="goods_level" property="goodsLevel"/>
+        <result column="extra_json" property="extraJson"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <sql id="tb">
+        map_goods
+    </sql>
+
+    <sql id="value_exclude_id">
+        name,image_url,goods_level,extra_json,created_at,updated_at
+    </sql>
+
+    <sql id="vls">
+        id,name,image_url,goods_level,extra_json,created_at,updated_at
+    </sql>
+
+    <sql id="insert_value">
+        #{name},#{imageUrl},#{goodsLevel},#{extraJson},DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s'),DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+    </sql>
+
+    <insert id="create" parameterType="MapGoods">
+        INSERT INTO <include refid="tb"/> (<include refid="value_exclude_id"/>) VALUES (<include refid="insert_value"/>)
+    </insert>
+
+    <select id="findById" parameterType="long" resultMap="MapGoodsMap">
+        SELECT <include refid="vls"/> FROM <include refid="tb"/> WHERE id = #{id}
+    </select>
+
+    <select id="findAll"  resultMap="MapGoodsMap">
+        SELECT <include refid="vls"/> FROM <include refid="tb"/>
+    </select>
+</mapper>
